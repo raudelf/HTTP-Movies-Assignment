@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import { Route } from "react-router-dom";
 import SavedList from "./Movies/SavedList";
 import MovieList from "./Movies/MovieList";
@@ -7,6 +8,17 @@ import UpdateMovie from './components/UpdateMovie';
 
 const App = () => {
   const [savedList, setSavedList] = useState([]);
+
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/movies")
+      .then(res => {
+        setMovies(res.data)
+      })
+      .catch(err => console.log('Axios Error in App.js: ', err.response));
+  }, [])
 
   const addToSavedList = movie => {
     setSavedList([...savedList, movie]);
@@ -25,7 +37,7 @@ const App = () => {
       <Route 
       path='/update-movie/:id'
       render={props => {
-        return <UpdateMovie {...props} movies={savedList} updateMovies={setSavedList}/> 
+        return <UpdateMovie {...props} movies={movies} updateMovies={setMovies}/> 
         }}
         />
     </>
