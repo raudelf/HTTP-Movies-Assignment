@@ -4,14 +4,14 @@ import axios from 'axios';
 const initialItem = {
     title: '',
     director: '',
-    metascore: '',
-    stars: []
+    metascore: ''
 }
 
 const UpdateMovie = props => {
     const [update, setUpdate] = useState(initialItem);
 
     useEffect(() => {
+        if (props.movies) {
         const selectedMovie = props.movies.find(movie => {
             return `${movie.id}` === props.match.params.id
         });
@@ -19,6 +19,7 @@ const UpdateMovie = props => {
         if (selectedMovie) {
             setUpdate(selectedMovie)
         }
+    }
     }, [props.movies, props.match.params.id]);
 
     const handleChanges = e => {
@@ -27,33 +28,44 @@ const UpdateMovie = props => {
         })
     }
 
+    const handleSubmit = e => {
+        // e.preventDefault();
+        axios
+            .put(`http://localhost:5000/api/movies/${update.id}`, update)
+            .then(res => {
+                props.updateMovies(res.data);
+            })
+            .catch(err => {
+                console.log('Update Error: ', err)
+            })
+        props.history.push('/')
+    }
+
     return (
         <div className='formContainer'>
-            <form className='formBox'>
+            <form className='formBox' onSubmit={handleSubmit}>
                 <input 
                 type='text'
                 name='title'
                 placeholder='Movie Title'
                 onChange={handleChanges}
+                value={update.title}
                 />
                 <input 
                 type='text'
                 name='director'
                 placeholder='Director'
                 onChange={handleChanges}
+                value={update.director}
                 />
                 <input 
                 type='text'
                 name='metascore'
                 placeholder='MetaScore'
                 onChange={handleChanges}
+                value={update.metascore}
                 />
-                <input 
-                type='text'
-                name='stars'
-                placeholder='Actors'
-                onChange={handleChanges}
-                />            
+                <button>Update Movie</button>
             </form>
         </div>
     )
