@@ -29,7 +29,6 @@ const UpdateMovie = props => {
     }
 
     const handleSubmit = e => {
-        // e.preventDefault();
         axios
             .put(`http://localhost:5000/api/movies/${update.id}`, update)
             .then(res => {
@@ -38,7 +37,6 @@ const UpdateMovie = props => {
             .catch(err => {
                 console.log('Update Error: ', err)
             })
-        props.history.push('/')
     }
 
     return (
